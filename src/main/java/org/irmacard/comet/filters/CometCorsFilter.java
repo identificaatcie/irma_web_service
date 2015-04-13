@@ -139,7 +139,6 @@ public final class CometCorsFilter implements CometFilter {
         this.exposedHeaders = new HashSet<String>();
     }
 
-	@Override
 	public void doFilterEvent(CometEvent event, CometFilterChain filterChain)
 			throws IOException, ServletException {
 
@@ -177,7 +176,6 @@ public final class CometCorsFilter implements CometFilter {
         }
 	}
 
-    @Override
     public void doFilter(final ServletRequest servletRequest,
             final ServletResponse servletResponse, final FilterChain filterChain)
             throws IOException, ServletException {
@@ -221,7 +219,6 @@ public final class CometCorsFilter implements CometFilter {
         }
     }
 
-    @Override
     public void init(final FilterConfig filterConfig) throws ServletException {
         // Initialize defaults
         parseAndStore(DEFAULT_ALLOWED_ORIGINS, DEFAULT_ALLOWED_HTTP_METHODS,
@@ -783,7 +780,6 @@ public final class CometCorsFilter implements CometFilter {
     	}
     }
 
-    @Override
     public void destroy() {
         // NOOP
     }

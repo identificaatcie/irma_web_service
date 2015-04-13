@@ -16,7 +16,6 @@ import com.google.gson.JsonParseException;
  *
  */
 public class ResponseAPDUDeserializer implements JsonDeserializer<ResponseAPDU> {
-	@Override
 	public ResponseAPDU deserialize(JsonElement json, Type typeOfT,
 			JsonDeserializationContext context) throws JsonParseException {
 		return new ResponseAPDU(Hex.hexStringToBytes(json.getAsString()));

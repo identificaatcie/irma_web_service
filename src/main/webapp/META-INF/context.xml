@@ -1,0 +1,10 @@
+<Context>
+	<Resource name="jdbc/irma_voucher" 
+	    auth="Container"
+		type="javax.sql.DataSource" 
+		username="root" 
+		password=""
+		driverClassName="com.mysql.jdbc.Driver" 
+        url="jdbc:mysql://localhost:3306/irma"
+		maxActive="15" maxIdle="3" />
+</Context>

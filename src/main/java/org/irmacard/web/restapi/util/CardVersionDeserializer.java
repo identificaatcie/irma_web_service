@@ -16,7 +16,6 @@ import com.google.gson.JsonParseException;
  *
  */
 public class CardVersionDeserializer implements JsonDeserializer<CardVersion> {
-	@Override
 	public CardVersion deserialize(JsonElement json, Type typeOfT,
 			JsonDeserializationContext context) throws JsonParseException {
 		return new CardVersion(Hex.hexStringToBytes(json.getAsJsonObject().get("cardVersion").getAsString()));

@@ -16,7 +16,6 @@ import com.google.gson.JsonParseException;
  *
  */
 public class ProtocolResponseDeserializer implements JsonDeserializer<ProtocolResponse> {
-	@Override
 	public ProtocolResponse deserialize(JsonElement json, Type typeOfT,
 			JsonDeserializationContext context) throws JsonParseException {
 		return new ProtocolResponse(

@@ -15,7 +15,6 @@ import com.google.gson.JsonSerializer;
  *
  */
 public class ProtocolCommandSerializer implements JsonSerializer<ProtocolCommand> {
-	@Override
 	public JsonElement serialize(ProtocolCommand src, Type typeOfSrc,
 			JsonSerializationContext context) {
 		JsonObject obj = new JsonObject();
