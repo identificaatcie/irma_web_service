@@ -7,6 +7,11 @@
 
   <name>irma web</name>
   <build>
+      <resources>
+          <resource>
+              <directory>data</directory>
+          </resource>
+      </resources>
       <plugins>
           <plugin>
               <groupId>org.apache.tomcat.maven</groupId>
@@ -15,7 +20,12 @@
               <configuration>
                   <path>/irma_web_service</path> <!-- also set to this elsewhere! -->
               </configuration>
-          </plugin>
+            </plugin>
+            <plugin>
+              <groupId>org.apache.tomcat.maven</groupId>
+              <artifactId>tomcat6-maven-plugin</artifactId>
+              <version>2.2</version>
+            </plugin>
         </plugins>
     </build>
 

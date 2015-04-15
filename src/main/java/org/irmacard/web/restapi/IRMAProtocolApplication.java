@@ -2,6 +2,7 @@ package org.irmacard.web.restapi;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.URL;
 
 import org.irmacard.credentials.idemix.util.CredentialInformation;
 import org.irmacard.credentials.info.DescriptionStore;
@@ -33,8 +34,10 @@ public class IRMAProtocolApplication extends Application {
 
 		URI CORE_LOCATION;
 		try {
-			CORE_LOCATION = IRMAProtocolApplication.class.getClassLoader()
-					.getResource("/resources/irma_configuration/").toURI();
+			ClassLoader loader = IRMAProtocolApplication.class.getClassLoader();
+
+			URL resource = loader.getResource("irma_configuration/");
+			CORE_LOCATION = resource.toURI();
 		} catch (URISyntaxException e) {
 			e.printStackTrace();
 			throw new RuntimeException(e.toString());
