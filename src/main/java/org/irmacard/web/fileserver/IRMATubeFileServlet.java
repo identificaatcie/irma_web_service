@@ -87,7 +87,7 @@ public class IRMATubeFileServlet extends HttpServlet {
     public void init() throws ServletException {
 		try {
 			this.basePath = IRMATubeFileServlet.class.getClassLoader()
-					.getResource("/resources/irmaTube/").toURI();
+					.getResource("irmaTube/").toURI();
 		} catch (URISyntaxException e) {
 			e.printStackTrace();
 			throw new ServletException(e.toString());

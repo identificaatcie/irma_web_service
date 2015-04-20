@@ -9,3 +9,5 @@ WebContent/WEB-INF/lib/idemix_library.lib.jar
 WebContent/WEB-INF/lib/idemix_terminal.lib.jar
 WebContent/WEB-INF/lib/scuba.lib.jar
 WebContent/META-INF/context.xml
+target/
+src/main/webapp/WEB-INF/lib
