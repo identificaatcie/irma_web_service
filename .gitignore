@@ -11,3 +11,6 @@ WebContent/WEB-INF/lib/scuba.lib.jar
 WebContent/META-INF/context.xml
 target/
 src/main/webapp/WEB-INF/lib
+.project
+.classpath
+.settings/
