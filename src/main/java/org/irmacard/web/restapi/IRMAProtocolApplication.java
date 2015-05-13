@@ -6,6 +6,7 @@ import java.net.URL;
 
 import org.irmacard.credentials.idemix.util.CredentialInformation;
 import org.irmacard.credentials.info.DescriptionStore;
+/*
 import org.irmacard.web.restapi.resources.NYTimesVerificationResource;
 import org.irmacard.web.restapi.resources.SpuitenEnSlikkenVerificationResource;
 import org.irmacard.web.restapi.resources.StudentCardIssueResource;
@@ -17,11 +18,18 @@ import org.irmacard.web.restapi.resources.irmaWiki.IRMAWikiRegistrationIssueReso
 import org.irmacard.web.restapi.resources.irmaWiki.IRMAWikiRegistrationVerificationResource;
 import org.irmacard.web.restapi.resources.irmaWiki.IRMAWikiVerificationResource;
 import org.irmacard.web.restapi.resources.surfnetCoupons.SurfnetVoucherVerificationResource;
+*/
+import org.irmacard.web.restapi.resources.thalia.ThaliaLoggedInResource;
+import org.irmacard.web.restapi.resources.thalia.ThaliaVerificationResource;
 import org.restlet.Application;
+import org.restlet.Context;
 import org.restlet.Restlet;
 import org.restlet.routing.Router;
 
 public class IRMAProtocolApplication extends Application {
+	
+	public static Context context = null;
+	
 	/**
 	 * Starting point for the IRMA REST interface for smartcard protocols. Contains
 	 * the URL router.
@@ -30,8 +38,12 @@ public class IRMAProtocolApplication extends Application {
 	 */
 	@Override
 	public synchronized Restlet createInboundRoot() {
-		Router router = new Router(getContext());
-
+		if (IRMAProtocolApplication.context == null) {
+			IRMAProtocolApplication.context = getContext().createChildContext();
+		}
+		Router router = new Router(context);
+		assert router.getContext() != null;
+		
 		URI CORE_LOCATION;
 		try {
 			ClassLoader loader = IRMAProtocolApplication.class.getClassLoader();
@@ -45,12 +57,19 @@ public class IRMAProtocolApplication extends Application {
 		CredentialInformation.setCoreLocation(CORE_LOCATION);
 		DescriptionStore.setCoreLocation(CORE_LOCATION);
 
+		/*
 		router.attach("/verification/SpuitenEnSlikken", SpuitenEnSlikkenVerificationResource.class);
 		router.attach("/verification/SpuitenEnSlikken/{id}/{step}", SpuitenEnSlikkenVerificationResource.class);
 
 		router.attach("/verification/NYTimes", NYTimesVerificationResource.class);
 		router.attach("/verification/NYTimes/{id}/{step}", NYTimesVerificationResource.class);
-
+		*/
+		
+		router.attach("/verification/Thalia", ThaliaVerificationResource.class);
+		router.attach("/verification/Thalia/{id}/getUserName", ThaliaLoggedInResource.class);
+		router.attach("/verification/Thalia/{id}/{step}", ThaliaVerificationResource.class);
+		
+		/*
 		router.attach("/verification/IRMATube/{age}", IRMATubeVerificationResource.class);
 		router.attach("/verification/IRMATube/{age}/{id}/{step}", IRMATubeVerificationResource.class);
 
@@ -73,7 +92,10 @@ public class IRMAProtocolApplication extends Application {
 		router.attach("/verification/IRMATubeRegistration/{id}/{step}", IRMATubeRegistrationVerificationResource.class);
 		router.attach("/issue/IRMATubeRegistration/{id}", IRMATubeRegistrationIssueResource.class);
 		router.attach("/issue/IRMATubeRegistration/{id}/{cred}/{step}", IRMATubeRegistrationIssueResource.class);
+		*/
 
+		assert router.getContext() != null;
+		assert router.getContext().getServerDispatcher().getContext() != null;
 		return router;
 	}   
 }

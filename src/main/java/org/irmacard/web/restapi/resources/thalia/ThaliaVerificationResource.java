@@ -1,10 +1,11 @@
-package org.irmacard.web.restapi.resources.irmaWiki;
+package org.irmacard.web.restapi.resources.thalia;
 
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ConcurrentMap;
 
 import javax.servlet.ServletContext;
 
@@ -14,85 +15,95 @@ import org.irmacard.credentials.info.InfoException;
 import org.irmacard.credentials.info.VerificationDescription;
 import org.irmacard.web.restapi.resources.VerificationBaseResource;
 import org.irmacard.web.restapi.util.ProtocolStep;
+import org.restlet.Context;
 
-public class IRMAWikiVerificationResource extends
+/**
+ * Verify the Thalia root credential
+ * 
+ * Based on IRMATube code
+ * 
+ * @author Thom Wiggers
+ *
+ */
+public class ThaliaVerificationResource extends
 		VerificationBaseResource {
-	final static String VERIFIER = "IRMAWiki";
-	final static String VERIFICATIONID = "memberAll";
-	public static final String ATTRIBUTE_STORE_NAME = "IRMAWiki.attribute.store";
+	final static String VERIFIER = "Thalia";
+	final static String VERIFICATIONID = "rootAll";
 
+	public static final String ATTRIBUTE_STORE_NAME = "ThaliaStore";
 	VerificationDescription memberDescription;
-
-	public IRMAWikiVerificationResource() {
+	
+	public ThaliaVerificationResource() {
 		try {
 			memberDescription = DescriptionStore.getInstance()
 					.getVerificationDescriptionByName(VERIFIER, VERIFICATIONID);
 		} catch (InfoException e) {
 			e.printStackTrace();
 		}
-
 	}
 
 	@Override
 	public ProtocolStep onSuccess(String id, Map<String, Attributes> attrMap) {
 		ProtocolStep ps = new ProtocolStep();
 
-		Attributes member = attrMap.get(VERIFICATIONID);
+		Attributes memberType = attrMap.get(VERIFICATIONID);
 
-		if (member == null) {
+		if (memberType == null) {
 			return ProtocolStep.newError(memberDescription.getName()
 					+ " credential is invalid/expired");
 		}
+
+		if ((new String(memberType.get("userID"))).isEmpty()) {
+			throw new RuntimeException("no UserID? WTF?");
+		}
 		
-		getAttributeStore().put(id, member);
+		String uid = new String(memberType.get("userID"));
+		Map<String, Object> data = new HashMap<String, Object>();
+		data.put("username", uid);
+		data.put("date", ZonedDateTime.now(ZoneOffset.UTC));
 		
-		System.out.println("refPath: " + getReference().getPath() + "\n refQuery: " + getReference().getQuery());
-		System.err.println("refPath: " + getReference().getPath() + "\n refQuery: " + getReference().getQuery());
+		getThaliaUserStore(getContext()).put(id, data);		
+		
+		
 		ps.protocolDone = true;
 		ps.status = "success";
-		ps.result = "http://wiki.pilot.irmacard.org/index.php?title=Special:IRMALogin/" + id;
+		ps.result = id;
 		return ps;
 	}
 
 	@Override
 	public List<VerificationDescription> getVerifications(String id) {
-		System.out.println("Member description: " + memberDescription);
 		List<VerificationDescription> result = new ArrayList<VerificationDescription>();
 		result.add(memberDescription);
 		return result;
 	}
-
+	
+	/**
+	 * The userid found in the credential is stored here.
+	 */
 	@SuppressWarnings("unchecked")
-	private Map<String, Attributes> getAttributeStore() {
-		Map<String, Attributes> store = null;
+	public static Map<String, Object> getThaliaUserStore(Context context) {
+		Map<String, Object> store = null;
 		ServletContext ctxt = null;
-		ServletContext other_ctxt = null;
 
 		try {
-			ConcurrentMap<String, Object> x = getContext().getServerDispatcher().getContext().getAttributes();			
-			ctxt = (ServletContext) x.get("org.restlet.ext.servlet.ServletContext");
-			other_ctxt = (ServletContext) getContext().getAttributes().get("org.restlet.ext.servlet.ServletContext");
+			ctxt = (ServletContext) context.getServerDispatcher().getContext().getAttributes().get("org.restlet.ext.servlet.ServletContext");
 		} catch (ClassCastException e) {
 			e.printStackTrace();
 		}
 
 		// Try first context
 		if(ctxt != null) {
-			store = (Map<String, Attributes>) ctxt.getAttribute(ATTRIBUTE_STORE_NAME);
-		}
-
-		// Try second context
-		if(store == null && other_ctxt != null) {
-			store = (Map<String, Attributes>) other_ctxt.getAttribute(ATTRIBUTE_STORE_NAME);
+			store = (Map<String, Object>) ctxt.getAttribute(ATTRIBUTE_STORE_NAME);
 		}
 
 		// Still no store found, create it and put it in first context.
 		if( store == null) {
 			System.out.println("Store not found, generating new store");
-			store = new HashMap<String, Attributes>();
+			store = new HashMap<String, Object>();
 			ctxt.setAttribute(ATTRIBUTE_STORE_NAME, store);
 		}
 
-		return store;
+		return store;		
 	}
 }

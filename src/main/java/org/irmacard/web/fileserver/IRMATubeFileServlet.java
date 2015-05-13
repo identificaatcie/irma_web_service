@@ -35,19 +35,16 @@ import java.net.URISyntaxException;
 import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.zip.GZIPOutputStream;
 
-import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.irmacard.web.restapi.resources.irmaTube.IRMATubeVerificationResource;
 
 /**
  * A file servlet supporting resume of downloads and client-side caching and GZIP of text content.
@@ -229,6 +226,8 @@ public class IRMATubeFileServlet extends HttpServlet {
         	e.printStackTrace();
         	response.sendError(HttpServletResponse.SC_FORBIDDEN);
         	return;
+        } finally {
+		permReader.close();
         }
 
         if(minAge > userAge) {
@@ -546,11 +545,7 @@ public class IRMATubeFileServlet extends HttpServlet {
     }
     
     private Map<String, Integer> getAgeStore() {
-		ServletContext servletctx = getServletContext();
-
-		@SuppressWarnings("unchecked")
-		Map<String, Integer> store = (Map<String, Integer>) servletctx
-				.getAttribute(IRMATubeVerificationResource.AGE_STORE_NAME);
+/*
 		if (store == null) {
 			System.out.println("Resetting store in IRMATubeFileServlet");
 			store = new HashMap<String, Integer>();
@@ -562,8 +557,8 @@ public class IRMATubeFileServlet extends HttpServlet {
 		for(String k : store.keySet()) {
 			System.out.println("Key: " + k + ", value: " + store.get(k));
 		}
-
-		return store;
+*/
+		return null;
 	}
 
     // Inner classes ------------------------------------------------------------------------------
