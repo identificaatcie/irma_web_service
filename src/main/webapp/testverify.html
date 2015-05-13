@@ -1,0 +1,51 @@
+<!doctype html>
+<html>
+    <head>
+        <title>Test van verifier</title>
+        <script src="//localhost:8080/irma_web_service/js/jquery-1.8.1.min.js"></script>
+        <script src="//localhost:8080/irma_web_service/js/smartcardjs.js" type="text/javascript"></script>
+        <script src="//localhost:8080/irma_web_service/js/channel.js" type="text/javascript"></script>
+        <script src="//localhost:8080/irma_web_service/js/ProxyReader.js" type="text/javascript"></script>
+        <script src="//localhost:8080/irma_web_service/js/bootstrap.min.js" type="text/javascript"></script>
+        <script src="//localhost:8080/irma_web_service/js/irma.js" type="text/javascript"></script>
+
+        <script>
+            "use strict";
+            $(document).ready(function() {
+                IRMAURL.base = "/irma_web_service";
+                IRMAURL.verifierLogo = IRMAURL.base + '/fullDemo/irmaTube/img/irmatube_verifier.png';
+                IRMAURL.html = IRMAURL.base + '/thalia';
+                IRMAURL.img = IRMAURL.base + '/img';
+                IRMAURL.action = IRMAURL.base + '/protocols/verification/Thalia';
+                $('#qr_image, #IRMA_button_verify').hide();
+                    
+                $('#startVerify').click(function() {
+                    $('#qr_image, #IRMA_button_verify').show();
+                    IRMA.init();
+                    IRMA.start_verify();
+                });
+
+                IRMA.onBackButtonPressed = function(data) {
+                    alert("TERUG? WUT?");
+                };
+
+                IRMA.onVerifySuccess = function(data) {
+                    IRMA.hide_verify();
+                    IRMA.done();
+                    alert("GREAT SUCCESS");
+                    window.location = IRMAURL.base + '/protocols/verification/Thalia/' + data.result + '/getUserName';
+                };
+            });
+        </script>
+    </head>
+    <body>
+        <h1>Verifier test</h1>
+
+        <div>
+            <p>Tests the verifier</p>
+            <input type="button" value="Start" id="startVerify"/>
+            <img src="" id="qr_image">
+            <span id="IRMA_button_verify">WAITING FOR CARD</span>
+        </div>
+    </body>
+</html>
